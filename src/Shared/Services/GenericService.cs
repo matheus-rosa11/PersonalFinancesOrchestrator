@@ -14,7 +14,7 @@ namespace Shared.Services
             mapper.Map<TRead>(await repository.GetByIdAsync(key));
 
         public async Task<IEnumerable<TRead>> GetAllAsync(int? limit = 0) =>
-            mapper.Map<IEnumerable<TRead>>(await repository.GetAllAsync(limit));
+            mapper.Map<IEnumerable<TRead>>(await repository.BatchGetAsync(limit));
 
         public async Task<bool> ExistsByIdAsync(TKey key) =>
             await repository.ExistsByIdAsync(key);

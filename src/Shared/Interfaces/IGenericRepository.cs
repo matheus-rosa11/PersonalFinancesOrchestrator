@@ -10,7 +10,7 @@ namespace Shared.Interfaces
     {
         Task<TEntity> CreateAsync(TEntity entity);
         Task<TEntity> GetByIdAsync(TKey id);
-        Task<IEnumerable<TEntity>> GetAllAsync(int? limit = 0);
+        Task<IEnumerable<TEntity>> BatchGetAsync(int? limit = 0);
         Task<bool> ExistsByIdAsync(TKey key);
         Task UpdateAsync(TKey id, TEntity updatedEntity);
         Task DeleteAsync(TKey id);

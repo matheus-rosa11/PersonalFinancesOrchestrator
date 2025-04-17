@@ -21,6 +21,20 @@ namespace AuthService.Endpoints
 
                 return Results.Created("api/v1/auth/register", createdUser);
             });
+
+            authGroup.MapGet("/get-by-id", async (Guid id, IUserService service) =>
+            {
+                try
+                {
+                    var user = await service.GetByIdAsync(id);
+
+                    return Results.Ok(user);
+                }
+                catch (KeyNotFoundException ex)
+                {
+                    return Results.NotFound(ex.Message);
+                }
+            });
         }
     }
 }

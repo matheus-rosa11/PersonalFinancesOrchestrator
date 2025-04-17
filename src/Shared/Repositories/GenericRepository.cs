@@ -1,37 +1,61 @@
-﻿using Shared.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using Shared.Interfaces;
+using Shared.Utils.Helpers;
 
 namespace Shared.Repositories
 {
-    public class GenericRepository<TKey, TEntity> : IGenericRepository<TKey, TEntity>
+    public class GenericRepository<TKey, TEntity>(DbContext context) : IGenericRepository<TKey, TEntity>
+        where TEntity : class
     {
-        public Task<TEntity> CreateAsync(TEntity entity)
+        protected readonly DbSet<TEntity> _dbSet = context.Set<TEntity>();
+
+        public async Task<TEntity> CreateAsync(TEntity entity)
         {
-            throw new NotImplementedException();
+            ArgumentNullException.ThrowIfNull(entity);
+
+            var created = await _dbSet.AddAsync(entity);
+            await context.SaveChangesAsync();
+            return created.Entity;
         }
 
-        public Task DeleteAsync(TKey id)
+        public async Task<TEntity> GetByIdAsync(TKey id)
         {
-            throw new NotImplementedException();
+            return await _dbSet.FindAsync(id) 
+                ?? throw new KeyNotFoundException(MessageHelper<TKey>.EntityNotFound(id));
         }
 
-        public Task<bool> ExistsByIdAsync(TKey key)
+        public async Task<IEnumerable<TEntity>> BatchGetAsync(int? limit = 0)
         {
-            throw new NotImplementedException();
+            var query = _dbSet.AsQueryable();
+
+            if (limit is > 0)
+                query = query.Take(limit.Value);
+
+            return await query.ToListAsync();
         }
 
-        public Task<IEnumerable<TEntity>> GetAllAsync(int? limit = 0)
+        public async Task<bool> ExistsByIdAsync(TKey id) => await _dbSet.FindAsync(id) is not null;
+
+        public async Task UpdateAsync(TKey id, TEntity updatedEntity)
         {
-            throw new NotImplementedException();
+            ArgumentNullException.ThrowIfNull(updatedEntity);
+
+            var existing = await _dbSet.FindAsync(id)
+                ?? throw new KeyNotFoundException(MessageHelper<TKey>.EntityNotFound(id));
+
+            context.Entry(existing).CurrentValues.SetValues(updatedEntity);
+
+            await context.SaveChangesAsync();
         }
 
-        public Task<TEntity> GetByIdAsync(TKey id)
+        public async Task DeleteAsync(TKey id)
         {
-            throw new NotImplementedException();
-        }
+            var existing = await _dbSet.FindAsync(id) ??
+                throw new KeyNotFoundException(MessageHelper<TKey>.EntityNotFound(id));
 
-        public Task UpdateAsync(TKey id, TEntity updatedEntity)
-        {
-            throw new NotImplementedException();
+            _dbSet.Remove(existing);
+
+            await context.SaveChangesAsync();
         }
     }
 }
