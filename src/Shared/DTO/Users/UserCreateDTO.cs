@@ -6,7 +6,7 @@ namespace Shared.DTO.Users
     {
         public string? Name { get; set; }
         public string? Email { get; set; }
-        public string? Password { get; }
+        public string? Password { get; set; }
         public DateTime? CreatedDate { get; private set; }
 
         public bool ValidateCreation()

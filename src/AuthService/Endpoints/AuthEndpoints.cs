@@ -1,4 +1,4 @@
-﻿using AuthService.Services;
+﻿using AuthService.Interfaces.Users;
 using Shared.DTO.Users;
 
 namespace AuthService.Endpoints
@@ -9,7 +9,7 @@ namespace AuthService.Endpoints
         {
             var authGroup = routes.MapGroup("api/v1/auth");
 
-            authGroup.MapPost("/register", async (UserService service, UserCreateDTO user) =>
+            authGroup.MapPost("/register", async (UserCreateDTO user, IUserService service) =>
             {
                 if (!user.ValidateCreation())
                     return Results.BadRequest();
@@ -17,9 +17,9 @@ namespace AuthService.Endpoints
                 var createdUser = await service.CreateAsync(user);
 
                 if (!await service.ExistsByIdAsync(createdUser.Id))
-                    return Results.BadRequest();
+                    return Results.BadRequest("An unknown error ocurred while trying to create a new entity");
 
-                return Results.Created();
+                return Results.Created("api/v1/auth/register", createdUser);
             });
         }
     }

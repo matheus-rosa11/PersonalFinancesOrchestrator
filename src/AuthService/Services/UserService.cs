@@ -1,24 +1,29 @@
 ﻿using AuthService.Interfaces.Users;
-using AuthService.Repositories;
+using AutoMapper;
 using Shared.DTO.Users;
+using Shared.Models;
 
 namespace AuthService.Services
 {
-    public class UserService(UserRepository repository) : IUserService
+    public class UserService(IUserRepository repository, IMapper mapper) : IUserService
     {
         public async Task<UserDTO> CreateAsync(UserCreateDTO createDTO)
         {
-            return await repository.CreateAsync(createDTO);
+            ArgumentNullException.ThrowIfNull(createDTO);
+
+            createDTO.SetCreatedDate(DateTime.UtcNow);
+
+            return mapper.Map<UserDTO>(await repository.CreateAsync(mapper.Map<User>(createDTO)));
         }
 
         public async Task<UserDTO> GetByIdAsync(Guid key)
         {
-            return await repository.GetByIdAsync(key);
+            return mapper.Map<UserDTO>(await repository.GetByIdAsync(key));
         }
 
         public async Task<IEnumerable<UserDTO>> GetAllAsync(int? limit = 0)
         {
-            return await repository.GetAllAsync(limit);
+            return mapper.Map<IEnumerable<UserDTO>>(await repository.GetAllAsync(limit));
         }
 
         public async Task<bool> ExistsByIdAsync(Guid key)
@@ -28,7 +33,7 @@ namespace AuthService.Services
 
         public async Task UpdateAsync(Guid key, UserUpdateDTO updateDTO)
         {
-            await repository.UpdateAsync(key, updateDTO);
+            await repository.UpdateAsync(key, mapper.Map<User>(updateDTO));
         }
 
         public async Task DeleteAsync(Guid key)

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Shared.Interfaces
 {
-    public interface IGenericService<TKey, TCreate, TRead, TUpdate>
+    public interface IGenericService<TKey, TEntity, TCreate, TRead, TUpdate>
     {
         Task<TRead> CreateAsync(TCreate createDTO);
         Task<TRead> GetByIdAsync(TKey key);

@@ -1,9 +1,10 @@
 ﻿using Shared.DTO.Users;
 using Shared.Interfaces;
+using Shared.Models;
 
 namespace AuthService.Interfaces.Users
 {
-    public interface IUserRepository : IGenericRepository<Guid, UserCreateDTO, UserDTO, UserUpdateDTO>
+    public interface IUserRepository : IGenericRepository<Guid, User>
     {
     }
 }

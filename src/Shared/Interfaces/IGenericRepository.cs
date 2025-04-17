@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace Shared.Interfaces
 {
-    public interface IGenericRepository<TKey, TCreate, TRead, TUpdate>
+    public interface IGenericRepository<TKey, TEntity>
     {
-        Task<TRead> CreateAsync(TCreate entity);
-        Task<TRead> GetByIdAsync(TKey id);
-        Task<IEnumerable<TRead>> GetAllAsync(int? limit = 0);
+        Task<TEntity> CreateAsync(TEntity entity);
+        Task<TEntity> GetByIdAsync(TKey id);
+        Task<IEnumerable<TEntity>> GetAllAsync(int? limit = 0);
         Task<bool> ExistsByIdAsync(TKey key);
-        Task UpdateAsync(TKey id, TUpdate updateDTO);
+        Task UpdateAsync(TKey id, TEntity updatedEntity);
         Task DeleteAsync(TKey id);
     }
 }

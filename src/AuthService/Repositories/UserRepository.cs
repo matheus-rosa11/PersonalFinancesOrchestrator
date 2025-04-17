@@ -1,37 +1,45 @@
 ﻿using AuthService.Interfaces.Users;
-using Shared.DTO.Users;
-using Shared.Repositories;
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Shared.Database;
+using Shared.Models;
 
 namespace AuthService.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository(AppDbContext context) : IUserRepository
     {
-        public async Task<UserDTO> CreateAsync(UserCreateDTO entity)
+        public async Task<User> CreateAsync(User entity)
+        {
+            ArgumentNullException.ThrowIfNull(entity);
+
+            var createdUser = await context.AddAsync(entity);
+
+            await context.SaveChangesAsync();
+
+            return createdUser.Entity;
+        }
+
+        public Task DeleteAsync(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<UserDTO> GetByIdAsync(Guid id)
+        public async Task<bool> ExistsByIdAsync(Guid key)
+        {
+            return await context.Users.AnyAsync(x => x.Id == key);
+        }
+
+        public Task<IEnumerable<User>> GetAllAsync(int? limit = 0)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<UserDTO>> GetAllAsync(int? limit = 0)
+        public Task<User> GetByIdAsync(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> ExistsByIdAsync(Guid key)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task UpdateAsync(Guid id, UserUpdateDTO updateDTO)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task DeleteAsync(Guid id)
+        public Task UpdateAsync(Guid id, User updatedEntity)
         {
             throw new NotImplementedException();
         }

@@ -2,19 +2,14 @@
 
 namespace Shared.Repositories
 {
-    public class GenericRepository<TKey, TCreate, TRead, TUpdate> : IGenericRepository<TKey, TCreate, TRead, TUpdate>
+    public class GenericRepository<TKey, TEntity> : IGenericRepository<TKey, TEntity>
     {
-        public Task<TRead> CreateAsync(TCreate entity)
+        public Task<TEntity> CreateAsync(TEntity entity)
         {
             throw new NotImplementedException();
         }
 
-        public Task<TRead> GetByIdAsync(TKey id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<TRead>> GetAllAsync(int? limit = 0)
+        public Task DeleteAsync(TKey id)
         {
             throw new NotImplementedException();
         }
@@ -24,11 +19,17 @@ namespace Shared.Repositories
             throw new NotImplementedException();
         }
 
-        public Task UpdateAsync(TKey id, TUpdate updateDTO)
+        public Task<IEnumerable<TEntity>> GetAllAsync(int? limit = 0)
         {
             throw new NotImplementedException();
         }
-        public Task DeleteAsync(TKey id)
+
+        public Task<TEntity> GetByIdAsync(TKey id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateAsync(TKey id, TEntity updatedEntity)
         {
             throw new NotImplementedException();
         }
