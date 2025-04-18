@@ -1,4 +1,4 @@
-﻿using System.Xml.Linq;
+﻿using Shared.Utils.Extensions;
 
 namespace Shared.DTO.Users
 {
@@ -11,9 +11,14 @@ namespace Shared.DTO.Users
 
         public bool ValidateCreation()
         {
-            if (Name == null) return false;
-            if (Email == null) return false;
-            if (Password == null) return false;
+            if (Name == null)
+                return false;
+
+            if (!Email.IsValidEmail())
+                return false;
+
+            if (Password == null)
+                return false;
 
             return true;
         }

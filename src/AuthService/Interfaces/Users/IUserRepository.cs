@@ -6,5 +6,6 @@ namespace AuthService.Interfaces.Users
 {
     public interface IUserRepository : IGenericRepository<Guid, User>
     {
+        Task<User?> GetByEmailAsync(string email);
     }
 }
