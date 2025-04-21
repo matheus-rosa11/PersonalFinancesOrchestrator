@@ -9,7 +9,7 @@ namespace Shared.DTO.Users
         public string? Password { get; set; }
         public DateTime? CreatedDate { get; private set; }
 
-        public bool ValidateCreation()
+        public bool Validate()
         {
             if (Name == null) return false;
             if (Email == null) return false;

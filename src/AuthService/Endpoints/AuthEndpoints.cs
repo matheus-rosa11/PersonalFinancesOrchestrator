@@ -11,7 +11,7 @@ namespace AuthService.Endpoints
 
             authGroup.MapPost("/register", async (UserCreateDTO user, IUserService service) =>
             {
-                if (!user.ValidateCreation())
+                if (!user.Validate())
                     return Results.BadRequest();
 
                 var createdUser = await service.CreateAsync(user);
