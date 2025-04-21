@@ -9,7 +9,7 @@ namespace Shared.Interfaces
     public interface IGenericRepository<TKey, TEntity>
     {
         Task<TEntity> CreateAsync(TEntity entity);
-        Task<TEntity> GetByIdAsync(TKey id);
+        Task<TEntity?> GetAsync(TKey id);
         Task<IEnumerable<TEntity>> BatchGetAsync(int? limit = 0);
         Task<bool> ExistsByIdAsync(TKey key);
         Task UpdateAsync(TKey id, TEntity updatedEntity);

@@ -10,10 +10,10 @@ namespace Shared.Services
         public virtual async Task<TRead> CreateAsync(TCreate createDTO) => 
             mapper.Map<TRead>(await repository.CreateAsync(mapper.Map<TEntity>(createDTO)));
 
-        public virtual async Task<TRead> GetByIdAsync(TKey key) =>
-            mapper.Map<TRead>(await repository.GetByIdAsync(key));
+        public virtual async Task<TRead?> GetAsync(TKey key) =>
+            mapper.Map<TRead>(await repository.GetAsync(key));
 
-        public async Task<IEnumerable<TRead>> GetAllAsync(int? limit = 0) =>
+        public async Task<IEnumerable<TRead>> BatchGetAsync(int? limit = 0) =>
             mapper.Map<IEnumerable<TRead>>(await repository.BatchGetAsync(limit));
 
         public async Task<bool> ExistsByIdAsync(TKey key) =>

@@ -18,11 +18,7 @@ namespace Shared.Repositories
             return created.Entity;
         }
 
-        public async Task<TEntity> GetByIdAsync(TKey id)
-        {
-            return await _dbSet.FindAsync(id) 
-                ?? throw new KeyNotFoundException(MessageHelper<TKey>.EntityNotFound(id));
-        }
+        public async Task<TEntity?> GetAsync(TKey id) => await _dbSet.FindAsync(id);
 
         public async Task<IEnumerable<TEntity>> BatchGetAsync(int? limit = 0)
         {
@@ -41,7 +37,7 @@ namespace Shared.Repositories
             ArgumentNullException.ThrowIfNull(updatedEntity);
 
             var existing = await _dbSet.FindAsync(id)
-                ?? throw new KeyNotFoundException(MessageHelper<TKey>.EntityNotFound(id));
+                ?? throw new KeyNotFoundException(MessageHelper.EntityNotFound(id));
 
             context.Entry(existing).CurrentValues.SetValues(updatedEntity);
 
@@ -51,7 +47,7 @@ namespace Shared.Repositories
         public async Task DeleteAsync(TKey id)
         {
             var existing = await _dbSet.FindAsync(id) ??
-                throw new KeyNotFoundException(MessageHelper<TKey>.EntityNotFound(id));
+                throw new KeyNotFoundException(MessageHelper.EntityNotFound(id));
 
             _dbSet.Remove(existing);
 
