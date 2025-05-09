@@ -13,10 +13,17 @@ namespace AuthService.Endpoints
 
             authGroup.MapPost("/register", async (UserCreateDTO user, IUserService service) =>
             {
-                if (!user.Validate())
-                    return Results.BadRequest("Invalid user.");
+                if (user.Validate() is (false, var message))
+                    return Results.BadRequest(message);
 
-                var createdUser = await service.CreateAsync(user);
+                var user2 = new UserCreateDTO
+                {
+                    Name = "",
+                    Email = "InvalidEmail",
+                    Password = ""
+                };
+
+                var createdUser = await service.CreateAsync(user2);
 
                 if (!await service.ExistsByIdAsync(createdUser.Id))
                     return Results.BadRequest(MessageHelper.UnknownErrorOnEntityCreation());
@@ -26,9 +33,16 @@ namespace AuthService.Endpoints
 
             authGroup.MapPost("/login", async (UserLoginDTO credentials, IUserService service) =>
             {
-                var token = await service.LoginAsync(credentials);
+                try
+                {
+                    var token = await service.LoginAsync(credentials);
 
-                return Results.Ok(token);
+                    return Results.Ok(token);
+                }
+                catch (ArgumentException ex)
+                {
+                    return Results.BadRequest(ex.Message);
+                }
             });
 
             authGroup.MapGet("/get-by-id", async (Guid id, IUserService service) =>
@@ -57,6 +71,13 @@ namespace AuthService.Endpoints
                     return Results.NotFound();
 
                 await service.DeleteAsync(id);
+
+                return Results.NoContent();
+            });
+
+            authGroup.MapDelete("/delete-all", async (IUserService service) =>
+            {
+                await service.BatchDeleteAsync();
 
                 return Results.NoContent();
             });

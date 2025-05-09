@@ -1,26 +1,27 @@
 ﻿using Shared.Utils.Extensions;
+using Shared.Utils.Helpers;
 
 namespace Shared.DTO.Users
 {
     public class UserCreateDTO
     {
-        public string? Name { get; set; }
-        public string? Email { get; set; }
-        public string? Password { get; set; }
+        public required string Name { get; set; }
+        public required string Email { get; set; }
+        public required string Password { get; set; }
         public DateTime? CreatedDate { get; private set; }
 
-        public bool Validate()
+        public (bool, string) Validate()
         {
-            if (Name == null)
-                return false;
+            if (Name.IsNullOrWhiteSpace())
+                return (false, MessageHelper.FieldCannotBeNullOrWhiteSpace(nameof(Name)));
 
             if (!Email.IsValidEmail())
-                return false;
+                return (false, MessageHelper.InvalidEmail());
 
-            if (Password == null)
-                return false;
+            if (Password.IsNullOrWhiteSpace())
+                return (false, MessageHelper.FieldCannotBeNullOrWhiteSpace(nameof(Password)));
 
-            return true;
+            return (true, string.Empty);
         }
 
         public void SetCreatedDate(DateTime createdDate) => CreatedDate = createdDate;

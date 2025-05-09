@@ -13,5 +13,18 @@ namespace Shared.Utils.Extensions
             var regex = RegexHelper.ValidEmailRegex();
             return regex.IsMatch(email);
         }
+
+        public static bool IsNullOrEmpty(this string? str) => string.IsNullOrEmpty(str);
+        public static bool IsNullOrWhiteSpace(this string? str) => string.IsNullOrWhiteSpace(str);
+
+        public static string Capitalize(this string? str)
+        {
+            if (str.IsNullOrWhiteSpace())
+                return string.Empty;
+
+            str = str!.ToLower();
+
+            return char.ToUpper(str[0]) + str.Substring(1);
+        }
     }
 }

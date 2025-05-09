@@ -20,6 +20,22 @@ namespace AuthService.Services
     {
         private readonly JwtSettings _jwtSettings = configuration.Value.Jwt;
 
+        public async Task BatchDeleteAsync()
+        {
+            var users = await repository.BatchGetAsync();
+
+            foreach (var user in users)
+                await repository.DeleteAsync(user.Id);
+        }
+
+        public override async Task<UserDTO> CreateAsync(UserCreateDTO createDTO)
+        {
+            if (await repository.GetByEmailAsync(createDTO.Email) is not null)
+                throw new UserAlreadyExistsException(createDTO.Email);
+
+            return await base.CreateAsync(createDTO);
+        }
+
         public async Task<string?> LoginAsync(UserLoginDTO credentials)
         {
             var user = await repository.GetByEmailAsync(credentials.Email) 
